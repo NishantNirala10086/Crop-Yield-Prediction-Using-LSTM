@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crop Yield Forecast · LSTM</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="top">
+  <h1>Crop yield forecast</h1>
+  <p>A stacked LSTM reads twelve months of rainfall, temperature and humidity, plus last season’s yield and inputs, and estimates tonnes per hectare.</p>
+</header>
+
+<main class="layout">
+  <form id="form" class="panel controls" autocomplete="off">
+    <h2>Choose a field</h2>
+    <label>District <select id="district" required></select></label>
+    <label>Crop <select id="crop" required></select></label>
+    <label>Season year <select id="year" required></select></label>
+
+    <h2>What if the weather differs?</h2>
+    <label>Rainfall change <output id="rainOut">0%</output>
+      <input id="rain" type="range" min="-60" max="100" step="5" value="0"></label>
+    <label>Temperature change <output id="tempOut">0.0 °C</output>
+      <input id="temp" type="range" min="-5" max="5" step="0.5" value="0"></label>
+
+    <button type="submit">Forecast yield</button>
+    <p id="msg" class="msg" role="status"></p>
+  </form>
+
+  <section class="panel result" id="result" hidden>
+    <div class="headline">
+      <div>
+        <div class="label">Predicted yield</div>
+        <div class="big"><span id="pred">–</span><small> t/ha</small></div>
+        <div class="range" id="range"></div>
+      </div>
+      <dl class="facts">
+        <div><dt>Five-season average</dt><dd id="avg5">–</dd></div>
+        <div><dt>Versus average</dt><dd id="delta">–</dd></div>
+        <div><dt>Recorded yield that year</dt><dd id="actual">–</dd></div>
+        <div><dt>Previous season</dt><dd id="prev">–</dd></div>
+      </dl>
+    </div>
+    <h3>Yield history and forecast</h3>
+    <div id="histChart" class="chart"></div>
+    <h3>Monthly weather used by the model</h3>
+    <div id="wxChart" class="chart"></div>
+    <p class="note">The shaded band is ± the model’s test-set RMSE. It is an estimate, not a guarantee; use it alongside local agronomic advice.</p>
+  </section>
+</main>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
